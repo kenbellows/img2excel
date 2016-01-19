@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Convert images to excel documents</title>
+  </head>
+  <body>
+    <section>
+      <form name="picForm"
+        action="/imgspreadsheet"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <p>
+          <input id="picFile"
+            type="file"
+            name="pic"
+            accept="image/*"
+            required
+          />
+        </p>
+        <p><img id="picImg" /></p>
+        <p>
+          <button id="imgSubmit" style="display: none">
+            Get your spreadsheet
+          </button>
+        </p>
+      </form>
+    </section>
+  
+    <script>
+    var picFile = document.getElementById('picFile'),
+        picImg  = document.getElementById('picImg'),
+        submit  = document.getElementById('imgSubmit');
+    
+    // when user pics an image, read it in and display it
+    picFile.addEventListener('change', showPic);
+    function showPic() {
+      submit.style.display = 'none';
+      if (picFile.files && picFile.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          picImg.src = evt.target.result;
+          submit.style.display = 'block';
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    }
+    picFile.value = "";
+    </script>
+  </body>
+</html>
+
