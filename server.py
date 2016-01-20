@@ -48,7 +48,7 @@ def img_spreadsheet():
   spreadsheet_filename =  filename[:filename.rindex('.')]+'.xlsx'
   print 'spreadsheet:', spreadsheet_filename
   spreadsheet_path = os.path.join(TMP_DIR, spreadsheet_filename)
-  excel_doc = workbook.makeWorkbook(spreadsheet_path, sheetData)
+  workbook.makeWorkbook(spreadsheet_path, sheetData)
   
   # set up a hook to delete the image and spreadsheet after sending to the user
   @hook('after_request')

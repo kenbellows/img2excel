@@ -28,7 +28,6 @@ def makeWorkbook(path, sheet_data, **format_vals):
       i += 1
       continue
     break
-  os.chdir(unpacked_dir)
   
   # generate some ids
   format_vals['workbookId'] = random.randint(0,sys.maxint)
@@ -48,19 +47,22 @@ def makeWorkbook(path, sheet_data, **format_vals):
         tfstr = tfin.read()
       # fill in the template and overwrite the file
       with open(tpath, 'w') as tfout:
-        print 'replacing',tpath,'wildcards matching any of',format_vals.keys()
-        tfout.write(tfstr.format(format_vals))
+        tfout.write(tfstr.format(**format_vals))
   
   # zip up the template dir into a workbook
-  with zipfile.ZipFile(path, 'w') as zipf:
-    zipdir(unpacked_dir, zipf)
-  
+  zipf = zipfile.ZipFile(path, 'w')
+  zipdir(unpacked_dir, zipf)
+  zipf.close()
+  print 'closed:',zipf.closed
   # delete the template dir; no longer needed
   shutil.rmtree(unpacked_dir)
 
 def zipdir(path, ziph):
+  if path.endswith('\\') or path.endswith('/'):
+    path = path[:-1]
   # ziph is zipfile handle
   for root, dirs, files in os.walk(path):
-    for file in files:
-      ziph.write(os.path.join(root, file))
+    for fname in files:
+      fpath = os.path.join(root, fname)
+      ziph.write(fpath, fpath[len(path)+1:])
 
