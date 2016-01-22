@@ -44,6 +44,7 @@ def img_spreadsheet():
   
   # convert image to spreadsheet rows
   sheetData = img_to_sheetData(img_path)
+  print sheetData[:200]
   # insert rows into an excel workbook
   spreadsheet_filename =  filename[:filename.rindex('.')]+'.xlsx'
   print 'spreadsheet:', spreadsheet_filename
@@ -51,10 +52,10 @@ def img_spreadsheet():
   workbook.makeWorkbook(spreadsheet_path, sheetData)
   
   # set up a hook to delete the image and spreadsheet after sending to the user
-  @hook('after_request')
-  def delete_spreadsheet():
-    os.remove(img_path)
-    os.remove(spreadsheet_path)
+  #@hook('after_request')
+  #def delete_spreadsheet():
+  #  os.remove(img_path)
+  #  os.remove(spreadsheet_path)
   # return the excel workbook
   return static_file(spreadsheet_filename, root=TMP_DIR, download=spreadsheet_filename)
 
@@ -161,7 +162,7 @@ def img_to_sheetData(filename, subpixels=False):
                     etree.tostring(b_cond_format)
      
     else:
-      row_s = str(row)
+      row_s = str(row+1)
       row_el = etree.SubElement(root, 'row')
       row_el.attrib['r'] = row_s
       for col in range(img_width):
@@ -206,6 +207,9 @@ def img_to_sheetData(filename, subpixels=False):
   if subpixels:
     sheet_format.attrib['defaultColWidth'] = '60'
     sheet_format.attrib['defaultRowHeight'] = '20'
+  else:
+    sheet_format.attrib['defaultColWidth'] = '60'
+    sheet_format.attrib['defaultRowHeight'] = '60'
   
   # combine the sheet format properties, sheet data, and
   # conditional formatting to create the resultng xml string
@@ -215,8 +219,8 @@ def img_to_sheetData(filename, subpixels=False):
   # convert result to single line
   result = re.sub(r'\n\s*', '', result)
   
-  if subpixels:
-    result = etree.parse
+  return result
+
 
 def genlabel(n):
   label=''
@@ -228,4 +232,3 @@ def genlabel(n):
   
 
 run(host='localhost', port=8080, debug=True)
-

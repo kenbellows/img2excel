@@ -52,11 +52,14 @@ def makeWorkbook(path, sheet_data, **format_vals):
   # zip up the template dir into a workbook
   zipf = zipfile.ZipFile(path, 'w')
   zipdir(unpacked_dir, zipf)
+  zfp = zipf.fp
   zipf.close()
-  print 'closed:',zipf.closed
+  print zipf.filename,'is closed:',zfp.closed
   # delete the template dir; no longer needed
   shutil.rmtree(unpacked_dir)
 
+
+# yoinked from: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory
 def zipdir(path, ziph):
   if path.endswith('\\') or path.endswith('/'):
     path = path[:-1]
